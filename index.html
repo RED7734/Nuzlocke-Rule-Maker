@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nuzlocke Rule Maker by RED7734</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap">
+<style>
+:root{--bg:#1d3a6b;--bg2:#27508f;--frame:#e9f1fb;--edge:#7fa3d6;--ink:#1b2a44;--muted:#4d607f;--slot:#ffffffcc;--se:#9db8e0;--tab:#2f6fd0;--w:#bfe3f5;--w2:#a6d5ee;--ac:#e5533d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1830;--bg2:#14305c;--frame:#22324f;--edge:#4a6ea5;--ink:#eaf1ff;--muted:#a9bbd9;--slot:#16223a;--se:#4a6ea5;--tab:#3b7be0}:root:not([data-theme="light"]) .board{filter:brightness(.62) saturate(.9)}}
+:root[data-theme="dark"]{--bg:#0c1830;--bg2:#14305c;--frame:#22324f;--edge:#4a6ea5;--ink:#eaf1ff;--muted:#a9bbd9;--slot:#16223a;--se:#4a6ea5;--tab:#3b7be0}
+:root[data-theme="dark"] .board{filter:brightness(.62) saturate(.9)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:"Nunito","Trebuchet MS",system-ui,sans-serif;font-weight:600;background:repeating-linear-gradient(45deg,#ffffff0d 0 14px,transparent 14px 28px),linear-gradient(180deg,var(--bg2),var(--bg));background-color:var(--bg);padding:20px 14px 40px}
+.pc{max-width:880px;margin:0 auto}
+h1{margin:0 0 12px;color:#fff;font-size:clamp(22px,5vw,30px);font-weight:900;text-align:center}
+.by{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 14px;color:#dbe7ff;font-weight:800}
+.gh{display:inline-flex;align-items:center;gap:6px;background:#fff;color:#1b2a44;text-decoration:none;font-weight:900;font-size:14px;border-radius:999px;padding:5px 12px;border:3px solid var(--edge)}
+.gh svg{width:18px;height:18px;fill:currentColor}
+.chips,.acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
+.chip,.btn,select{font:inherit;font-weight:800;font-size:15px;border-radius:999px;border:3px solid var(--edge);padding:6px 16px;cursor:pointer;background:var(--frame);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--tab);color:#fff}
+.btn{background:var(--ac);color:#fff;border-color:#0003}
+.desc{color:#dbe7ff;text-align:center;margin:0 0 12px;font-size:15px}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.bar{display:flex;align-items:center;gap:10px;background:var(--frame);border:3px solid var(--edge);border-radius:18px 18px 0 0;padding:10px 12px;margin-top:4px}
+.arrow{flex:none;width:44px;height:44px;border-radius:50%;border:3px solid var(--edge);background:var(--tab);color:#fff;font:900 20px/1 inherit;cursor:pointer}
+.title{flex:1;text-align:center;font-weight:900;font-size:clamp(18px,4.5vw,26px);background:var(--w);color:#1b2a44;border:3px solid var(--edge);border-radius:999px;padding:6px 14px}
+.board{background:radial-gradient(circle at 20% 15%,#ffffff55 0 40px,transparent 41px),radial-gradient(circle at 85% 80%,#ffffff44 0 60px,transparent 61px),repeating-linear-gradient(90deg,transparent 0 38px,#ffffff30 38px 40px),linear-gradient(180deg,var(--w),var(--w2));border:3px solid var(--edge);border-top:0;border-radius:0 0 18px 18px;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tile{position:relative;height:84px;padding:0 14px 0 62px;text-align:left;font:inherit;font-weight:900;font-size:17px;line-height:1.2;color:var(--ink);background:var(--slot);border:3px solid var(--se);border-radius:14px;box-shadow:0 3px 0 var(--se);cursor:pointer;display:flex;align-items:center}
+.tile[aria-pressed="true"]{border-color:var(--ac);box-shadow:0 3px 0 var(--ac)}
+.tile.off{opacity:.5;border-style:dashed}
+.tile.add{padding:0;justify-content:center;border-style:dashed;color:var(--muted)}
+.ico{position:absolute;left:12px;top:50%;margin-top:-19px;width:38px;height:38px;border-radius:50%;background:linear-gradient(180deg,var(--ac) 0 46%,#222 46% 54%,#fff 54%);border:3px solid #222}
+.ico::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff;border:3px solid #222}
+.none{grid-column:1/-1;margin:0;padding:20px;text-align:center;color:var(--ink);font-weight:800}
+.detail{background:var(--frame);border:3px solid var(--edge);border-radius:14px;padding:14px 16px;margin-top:12px;color:var(--ink)}
+.detail h2{margin:0 0 8px;font-size:20px;font-weight:900}
+.detail p{margin:0 0 8px;font-size:16px;line-height:1.5}
+.detail p:last-child{margin-bottom:0}
+.detail .ex{color:var(--muted);font-size:15px}
+.detail input[type=text],.detail textarea{width:100%;font:inherit;font-weight:700;font-size:16px;color:var(--ink);background:var(--slot);border:3px solid var(--se);border-radius:10px;padding:8px 10px;margin:6px 0}
+.detail label{display:flex;gap:8px;align-items:center;font-weight:800}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid #fff;background:#ffffff44;cursor:pointer;padding:0}
+.dot[aria-current="true"]{background:var(--ac)}
+.foot{text-align:center;color:#dbe7ff;margin-top:12px;font-size:14px}
+</style>
+</head>
+<body>
+<main class="pc">
+  <h1>Nuzlocke Rule Maker</h1>
+  <p class="by"><span>by RED7734</span><a class="gh" href="https://github.com/RED7734" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></p>
+  <div class="chips" id="chips"></div>
+  <p class="desc" id="desc"></p>
+  <div class="acts" id="acts"></div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+  <div class="bar">
+    <button class="arrow" id="prev" aria-label="Previous box">&#9664;</button>
+    <div class="title" id="title" aria-live="polite"></div>
+    <button class="arrow" id="next" aria-label="Next box">&#9654;</button>
+  </div>
+  <section class="board" id="board"></section>
+  <section class="detail" id="detail" hidden aria-live="polite"></section>
+  <nav class="dots" id="dots" aria-label="Boxes"></nav>
+  <p class="foot">Click a rule to open it. Use the arrows or the left/right keys to switch box.</p>
+</main>
+<script>
+const BOXES=[
+{id:"catch",n:"Catching",w:["#bfe3f5","#a6d5ee"]},
+{id:"fair",n:"Fair Play",w:["#c8f0d2","#a8e2b8"]},
+{id:"death",n:"Cemetery",w:["#d9d2ec","#c3b8e0"]},
+{id:"extra",n:"Exceptions",w:["#fde7b8","#f8d58d"]},
+{id:"save",n:"Saves",w:["#f6c9d3","#eeb0c0"]},
+{id:"link",n:"Soul Link",w:["#e6d3f5","#d4b8ec"]},
+{id:"fun",n:"Nicknames & Fun",w:["#c6ebe8","#a5ddd9"]}];
+const R={
+one:{b:"catch",t:"One catch per area",p:"You may catch only the first Pokémon you meet in each new area. If it faints or flees, the area is lost.\nIf the first encounter is a double battle or horde, you may choose which one to catch, but only one.\nExample: the first wild Pokémon on Route 1 is a Pidgey. It is your only catch there, even if you wanted a Rattata."},
+species:{b:"catch",t:"Species clause",p:"If the first encounter is a species you already own (or its evolution line), it does not count and you move on to the next encounter.\nExample: the first encounter on Route 2 is a Caterpie and you already own a Metapod. It doesn’t count, so you move on to the next encounter."},
+nocheat:{b:"catch",t:"No cheating the encounter",p:"Killing a Pokémon or fleeing on purpose to get a different encounter is forbidden. Penalty: you may not catch the next one.\nIf you honestly misclicked Run, got a surprise critical hit or failed in any genuine way, you may catch the next encounter."},
+items_fair:{b:"fair",t:"Items: the opponent’s rules",p:"Healing items such as Potion and Super Potion are allowed only in battles where the opponent is scripted to use healing items too. It doesn’t matter if the NPC doesn’t actually use one in that fight: what counts is that they can.\nExample: a Gym Leader is known to be scripted to use Super Potions, so you may use them against that leader as well, even if they don’t use one this time."},
+items_none:{b:"fair",t:"No items in battle",p:"No items may be used in battle except held items. This includes healing items, revives and X-items.\nExample: you can’t use a Super Potion or an X Attack mid-battle, but a held Oran Berry works."},
+revive_ban:{b:"fair",t:"No revives or battle items",p:"Revives and battle items such as X Attack are never allowed."},
+levelcap:{b:"fair",t:"Level cap",p:"You may not use Pokémon above the level of the next Gym Leader’s, Elite Four member’s or Champion’s highest-level Pokémon (their ace). Over-leveled Pokémon stay in storage until they are eligible.\nExample: the next Gym Leader’s ace is level 22, so none of your team may be above level 22 until you beat them."},
+setmode:{b:"fair",t:"Set battle style",p:"Set the battle style to Set in the options. After you knock out an opponent’s Pokémon there is no free switch. In games without Set mode, simply choose not to switch."},
+norevive:{b:"fair",t:"No revives",p:"Revival methods such as Revive and Revival Blessing are forbidden."},
+candy:{b:"fair",t:"Rare Candies",p:"Rare Candies are allowed as a replacement for grinding. They give no EVs. The level cap still applies."},
+perma:{b:"death",t:"Fainted means dead",p:"A fainted Pokémon is dead. Put it in a box named Deceased (or release it) and never use it again."},
+gameover:{b:"death",t:"Whiteout means game over",p:"If all your Pokémon faint, the run is over and you start again, even if you still have living Pokémon in the PC."},
+window:{b:"death",t:"Start and finish",p:"The Nuzlocke begins when you obtain Poké Balls and ends when you enter the Hall of Fame.\nExample: the first wild fights before you get Poké Balls don’t count."},
+postgame:{b:"death",t:"Post-game revival",p:"After the Hall of Fame, deceased Pokémon may be used again."},
+shiny:{b:"extra",t:"Shiny clause",p:"If you find a shiny, you may catch it even if you already used that area’s catch."},
+gift:{b:"extra",t:"Gift Pokémon",p:"A gift Pokémon from an NPC is a free Pokémon and does not use up the area’s wild catch.\nExample: the Eevee in the Celadon Condominiums is separate from Celadon’s wild catch."},
+trade:{b:"extra",t:"Trades",p:"Players may trade Pokémon with each other. By trading, they also exchange the encounter area.\nExample: player 1 finds Buneary, which player 2 likes, and player 2 finds a Pokémon player 1 likes. They swap, and the areas swap too."},
+bosssave:{b:"save",t:"Boss saves",p:"You may save before boss battles: Gym Leaders, Elite Four members, the Champion, evil team generals and leaders.\nIf you lose, reload the last save instead of restarting. If you win, you proceed even if many Pokémon fainted.\nNo cheating: in your heart, you must be fair. You can’t restart or lose on purpose because half your team died. If you can win even with a single Pokémon left alive, you progress. You may only reload if you lose without wanting to lose."},
+noreset:{b:"save",t:"No save scumming",p:"Never reload or soft-reset to undo a faint, a failed catch or a bad encounter. What happens, stays.\nExample: a critical hit knocks out your Pokémon. You can’t soft-reset to undo it."},
+link:{b:"link",t:"Soul link",p:"Each catch is linked with your partner’s catch from the same area, starting with the first partner Pokémon. Linked Pokémon are soulmates.\nExample: player 1 catches a Pidgey and player 2 catches a Rattata on Route 1. They are now linked."},
+linkdeath:{b:"link",t:"Shared fate",p:"When a Pokémon faints, its soulmate is dead too and goes to the cemetery.\nExample: Pidgey faints, so the linked Rattata is dead as well."},
+linkarea:{b:"link",t:"Both must catch",p:"Common house rule: an area only counts if both players catch something. If one player fails, the other player’s catch from that area is not used."},
+linktype:{b:"link",t:"Type clause",p:"Linked Pokémon may not share a type. If both players find the same type in an area, neither may use it.\nExample: both players find a Water-type on Route 4, so neither may use it."},
+linkparty:{b:"link",t:"Linked party",p:"Linked Pokémon must be in both players’ parties at the same time. You may not leave one in the PC while its soulmate is on the team."},
+nick:{b:"fun",t:"Nicknames",p:"Nickname every Pokémon to build a bond with it.\nExample: your new Pidgey becomes “Sir Flaps”."},
+fun:{b:"fun",t:"Have fun",p:"The most important rule is to have fun."}};
+const base=["one","species","gift","setmode","norevive","perma","gameover","window","noreset","nick"];
+const ov={setmode:"Set the battle style to Set in the options. After you knock out an opponent’s Pokémon there is no free switch. In games without Set mode, simply choose not to switch."};
+const P={
+ic:{n:"I&C preset",d:"A ruleset I created to play with my girlfriend. Feel free to try it, couples and singles alike!",ids:["one","species","nocheat","shiny","gift","trade","items_fair","revive_ban","levelcap","candy","setmode","perma","window","postgame","bosssave","nick","fun"],o:{
+levelcap:"The level cap depends on the highest-level Pokémon of the next boss. We may level up to that Pokémon’s level before facing the boss, and never above it.\nTo avoid hassle, if we sometimes overlevel by mistake we can turn a blind eye, as long as we don’t take the whole team over the level cap.",
+candy:"Rare Candies are allowed. They replace the boring, annoying grinding, and they are legal to use. They give no EVs, so they are fair.\nThe level cap always applies: use them, ideally before the next boss, to reach the level cap before the fight.",
+one:"Catch the first Pokémon you meet in each new area that is not a species duplicate.\nIf it faints by accident or flees, you may catch the next one.",
+species:"If you meet a species you already own (or its evolution line), you may skip it, or catch it anyway. If you catch it, it counts as that area’s catch.\nExample: Zubat already caught, then you meet Golbat. Skip it or catch it as the area’s catch.",
+nocheat:"Killing a Pokémon or fleeing on purpose to get a better encounter is forbidden. Penalty: you may not catch the next one, and the area is closed.\nExample: you find Growlithe but wanted Starly, so you knock out Growlithe. Wrong!\nIf you honestly misclicked Run, got a surprise critical hit or failed in any genuine way, you may catch the next encounter. In your heart, you know.",
+gift:"You may receive a gift Pokémon from an NPC. Example (Pokémon Renegade Platinum): the three Kanto starters you get in Jubilife City. Choose only one.\nThe other two go in a box you create called “Not dead, not allowed” (NDNA for short), and stay there.\nThe gift counts as that area’s encounter.",
+perma:"Fainted Pokémon go in a Deceased box and are never retrieved until the end of the Nuzlocke.\nThe only exception is avoiding a softlock: you may retrieve one only if the game cannot be progressed otherwise.\nExample: you have only your starter and a Bidoof with Rock Smash, and you need Rock Smash to progress.",
+window:"The Nuzlocke begins when we obtain Poké Balls and ends when we enter the Hall of Fame after beating the Elite Four and the Champion.",
+postgame:"Once the Nuzlocke ends, deceased Pokémon may be used again in the post-game.",
+nick:"Every Pokémon gets a nickname. You may follow a theme, like Italian food nicknames, or any other theme, but it is not a hard rule. What matters is that every Pokémon has one.",
+fun:"These rules are built for our own playstyle: a fair challenge without making the game too complex. Many hardcore Nuzlocke players may disagree, and that is fine. You are free to go play with a harder ruleset, no one is forcing you to use ours. The most important rule is to have fun."}},
+classic:{n:"Classic",d:"The original Nuzlocke rules, simple and strict.",ids:base,o:ov},
+hard:{n:"Hardcore",d:"Classic plus no healing items, level caps, Set mode and no save scumming.",ids:["one","species","gift","perma","gameover","window","items_none","norevive","levelcap","setmode","noreset","nick"],o:ov},
+soul:{n:"Soul Link",d:"Two players with linked catches and shared deaths.",ids:[...base,"link","linkdeath","linkarea","linktype","linkparty"],o:ov},
+custom:{n:"Custom",d:"Build your own ruleset: switch rules on or off, edit them, add new ones. Saved in this browser."},
+blank:{n:"Blank",h:1,ids:[]}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const S={pid:"ic",edit:false,bi:0,sel:null,c:null};
+try{const v=JSON.parse(localStorage.getItem("nzmk")||"null");if(v&&v.c){S.c=v.c;S.pid=P[v.pid]?v.pid:"ic"}}catch(e){}
+function save(){try{localStorage.setItem("nzmk",JSON.stringify({pid:S.pid,c:S.c}))}catch(e){}}
+function mat(k){const p=P[k],o={};for(const id in R)o[id]={b:R[id].b,t:R[id].t,p:(p.o&&p.o[id])||R[id].p,on:p.ids.includes(id)};return o}
+function rules(){
+  if(S.pid==="custom")return Object.entries(S.c||{}).map(([id,r])=>({id,...r}));
+  const p=P[S.pid];return p.ids.map(id=>({id,b:R[id].b,t:R[id].t,p:(p.o&&p.o[id])||R[id].p,on:true}));
+}
+const body=p=>p.split("\n").filter(Boolean).map(l=>`<p class="${/^Example/.test(l)?"ex":""}">${esc(l)}</p>`).join("");
+let boxes=[];
+function view(){
+  const all=rules(),vis=all.filter(r=>S.edit||r.on);
+  boxes=BOXES.filter(b=>S.edit||vis.some(r=>r.b===b.id));
+  S.bi=Math.max(0,Math.min(S.bi,boxes.length-1));
+  const b=boxes[S.bi],c=S.pid==="custom";
+  $("chips").innerHTML=["classic","hard","soul","ic","custom"].map(k=>`<button class="chip" data-k="${k}" aria-pressed="${k===S.pid}">${P[k].n}</button>`).join("");
+  $("desc").textContent=P[S.pid].d;
+  $("acts").innerHTML=(c?`<button class="btn" data-a="edit">${S.edit?"Done":"Edit rules"}</button>`+(S.edit?`<select id="from" aria-label="Start from a preset"><option value="">Start from…</option>${["classic","hard","soul","ic","blank"].map(k=>`<option value="${k}">${P[k].n}</option>`).join("")}</select>`:""):`<button class="btn" data-a="cust">Customize this preset</button>`)+(c?`<button class="btn" data-a="dl">Download rules</button><button class="btn" data-a="load">Load rules</button>`:"")+`<button class="btn" data-a="copy">Copy as text</button>`;
+  $("title").textContent=b?`BOX ${S.bi+1} · ${b.n}`:"No rules selected";
+  if(b){
+    document.documentElement.style.setProperty("--w",b.w[0]);document.documentElement.style.setProperty("--w2",b.w[1]);
+    $("board").innerHTML=vis.filter(r=>r.b===b.id).map(r=>`<button class="tile${r.on?"":" off"}" data-id="${r.id}" aria-pressed="${r.id===S.sel}"><span class="ico"></span><span>${esc(r.t)}</span></button>`).join("")+(S.edit?`<button class="tile add" data-add="1">+ Add rule</button>`:"");
+  }else $("board").innerHTML=`<p class="none">No rules yet. Press Edit rules and switch some on.</p>`;
+  $("dots").innerHTML=boxes.map((x,n)=>`<button class="dot" data-n="${n}" aria-label="${x.n}" aria-current="${n===S.bi}"></button>`).join("");
+  const r=b&&vis.find(x=>x.id===S.sel&&x.b===b.id),d=$("detail");
+  if(!r){S.sel=null;d.hidden=true}else{
+    d.hidden=false;
+    d.innerHTML=S.edit?`<label><input type="checkbox" id="e-on" ${r.on?"checked":""}> Included in this ruleset</label><input type="text" id="e-t" aria-label="Rule title" value="${esc(r.t)}"><textarea id="e-p" rows="6" aria-label="Rule text">${esc(r.p)}</textarea>${r.id[0]==="x"?'<button class="btn" data-a="del">Delete rule</button>':""}`:`<h2>${esc(r.t)}</h2>`+body(r.p);
+  }
+}
+function go(n){S.bi=(n+boxes.length)%Math.max(boxes.length,1);S.sel=null;view()}
+function reset(){S.sel=null;S.bi=0}
+$("chips").onclick=e=>{const k=e.target.dataset.k;if(!k)return;S.pid=k;if(k==="custom"&&!S.c)S.c=mat("ic");S.edit=false;reset();save();view()};
+$("acts").onclick=e=>{
+  const a=e.target.dataset.a;if(!a)return;
+  if(a==="edit"){S.edit=!S.edit;S.sel=null}
+  if(a==="cust"){S.c=mat(S.pid);S.pid="custom";S.edit=true;S.sel=null;save()}
+  if(a==="dl"){
+    const u=URL.createObjectURL(new Blob([JSON.stringify({app:"nuzlocke-rule-maker",v:1,rules:S.c},null,2)],{type:"application/json"})),l=document.createElement("a");
+    l.href=u;l.download="nuzlocke-rules.json";document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);return;
+  }
+  if(a==="load"){$("file").click();return}
+  if(a==="copy"){
+    const txt=BOXES.map(b=>{const l=rules().filter(r=>r.on&&r.b===b.id);return l.length?b.n.toUpperCase()+"\n"+l.map(r=>"- "+r.t+": "+r.p.replace(/\n/g," ")).join("\n"):""}).filter(Boolean).join("\n\n");
+    const show=()=>{const d=$("detail");d.hidden=false;d.innerHTML=`<h2>Copy this text</h2><textarea readonly rows="10" aria-label="Rules as text">${esc(txt)}</textarea>`};
+    try{navigator.clipboard.writeText(txt).then(()=>{e.target.textContent="Copied"},show)}catch(x){show()}
+    return;
+  }
+  view();
+};
+$("acts").onchange=e=>{if(e.target.id==="from"&&e.target.value){S.c=mat(e.target.value);reset();save();view()}};
+$("board").onclick=e=>{
+  const t=e.target.closest(".tile");if(!t)return;
+  if(t.dataset.add){const id="x"+Date.now();S.c[id]={b:boxes[S.bi].id,t:"New rule",p:"Describe the rule.",on:true};S.sel=id;save();view();return}
+  S.sel=S.sel===t.dataset.id?null:t.dataset.id;view();
+  const d=$("detail");if(!d.hidden)d.scrollIntoView({block:"nearest",behavior:"smooth"});
+};
+$("detail").oninput=e=>{
+  const r=S.c&&S.c[S.sel];if(!r)return;
+  if(e.target.id==="e-t"){r.t=e.target.value;const t=document.querySelector(`.tile[data-id="${S.sel}"] span:last-child`);if(t)t.textContent=r.t}
+  if(e.target.id==="e-p")r.p=e.target.value;
+  save();
+};
+$("detail").onchange=e=>{if(e.target.id==="e-on"&&S.c[S.sel]){S.c[S.sel].on=e.target.checked;save();view()}};
+$("detail").onclick=e=>{if(e.target.dataset.a==="del"){delete S.c[S.sel];S.sel=null;save();view()}};
+$("file").onchange=e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const j=JSON.parse(rd.result),o={};
+      if(!j||j.app!=="nuzlocke-rule-maker"||typeof j.rules!=="object")throw 0;
+      for(const id in j.rules){const r=j.rules[id];if(id!=="__proto__"&&/^[a-z0-9_]{1,40}$/.test(id)&&r&&BOXES.some(b=>b.id===r.b)&&typeof r.t==="string"&&typeof r.p==="string")o[id]={b:r.b,t:r.t.slice(0,80),p:r.p.slice(0,1500),on:!!r.on}}
+      if(!Object.keys(o).length)throw 0;
+      S.c=o;S.pid="custom";S.edit=false;reset();save();view();
+    }catch(x){const d=$("detail");d.hidden=false;d.innerHTML="<h2>Could not load file</h2><p>Use a file downloaded from this rule maker.</p>"}
+  };
+  rd.readAsText(f);
+};
+$("dots").onclick=e=>{const n=e.target.dataset.n;if(n!==undefined)go(+n)};
+$("prev").onclick=()=>go(S.bi-1);$("next").onclick=()=>go(S.bi+1);
+document.addEventListener("keydown",e=>{if(e.target.matches("input,textarea,select"))return;if(e.key==="ArrowLeft")go(S.bi-1);if(e.key==="ArrowRight")go(S.bi+1)});
+if(S.pid==="custom"&&!S.c)S.pid="ic";
+view();
+</script>
+</body>
+</html>
