@@ -1,6 +1,8 @@
 # Nuzlocke-Rule-Maker
 A single-page tool to browse, share and create Pokémon Nuzlocke Challange rulesets. No install, no dependencies: just open `index.html`.
 
+**[Open Nuzlocke Rule Maker](https://red7734.github.io/Nuzlocke-Rule-Maker/)**
+
 ## Features
 
 - **Presets:** Classic, Hardcore, Soul Link and the I&C preset, a ruleset I created to play with my girlfriend. Feel free to try it, couples and singles alike!
